@@ -170,7 +170,123 @@
             }).bind(this));
         }
     });
-    
+
+    /* File Button -- Work In Progress
+     *
+     * Bundle.FileButton = new Class({
+     *     // label, text
+     *     // action -> click
+     *     "Extends": Bundle.Button,
+     *     "initialize": function (params) {
+     *         this.params = params;
+     *         this.params.searchString = "•" + this.params.tab + "•" + this.params.group + "•";
+     *
+     *         this.createDOM();
+     *         this.setupDOM();
+     *         this.addEvents();
+     *
+     *         if (this.params.id !== undefined) {
+     *             this.element.set("id", this.params.id);
+     *         }
+     *
+     *         this.params.searchString = this.params.searchString.toLowerCase();
+     *     },
+     *
+     *     "createDOM": function () {
+     *         //-- do same DOM creation as `Button`
+     *         this.parent();
+     *
+     *         //-- add file specific DOM creation
+     *         this.element = new Element("input", {
+     *             "class": "setting element button",
+     *             "type": "file"
+     *         });
+     *
+     *         this.label = new Element("label", {
+     *             "class": "setting label button"
+     *         });
+     *     },
+     *
+     *     "setupDOM": function () {
+     *         //-- do same DOM setup as `Button`
+     *         this.parent();
+     *     },
+     *
+     *     "addEvents": function () {
+     *         this.modalElement.addEvent("click", (function () {
+     *             this.fireEvent("action");
+     *         }).bind(this));
+     *     }
+     * });
+     */
+
+    Bundle.ModalButton = new Class({
+        // label, text
+        // action -> click
+        "Extends": Bundle.Button,
+
+        "createDOM": function () {
+            //-- do same DOM creation as `Button`
+            this.parent();
+
+            //-- add modal specific DOM creation
+            this.modalBackdrop = new Element("div", {
+                "class": "modal backdrop hide"
+            });
+
+            this.modalContainer = new Element("div", {
+                "class": "modal container"
+            });
+
+            this.modalTitle = new Element("h2", {
+                "class": "modal title"
+            });
+
+            this.modalDone = new Element("button", {
+                "class": "modal done"
+            })
+        },
+
+        "setupDOM": function () {
+            //-- do same DOM setup as `Button`
+            this.parent();
+
+            //-- add modal specific DOM setup
+            var that = this;
+
+            if (this.params.modal.title !== undefined) {
+                this.modalTitle.set("html", this.params.modal.title);
+                this.modalTitle.inject(this.modalContainer);
+                this.params.searchString += this.params.label + "•";
+            }
+
+            this.modalContainer.inject(this.modalBackdrop);
+            this.modalBackdrop.inject(this.bundle);
+
+            this.params.modal.contents.forEach(function (item) {
+                (new Setting(that.modalContainer)).create(item);
+            });
+
+            this.modalDone.set('html', 'Done');
+            this.modalDone.inject(this.modalContainer);
+        },
+
+        "addEvents": function () {
+            //-- do same addEvents as `Button`
+            this.parent();
+
+            //-- add model specific events
+            this.element.addEvent('click', (function () {
+                this.modalBackdrop.removeClass('hide');
+            }).bind(this));
+
+            this.modalDone.addEvent('click', (function(){
+                this.modalBackdrop.addClass('hide');
+                this.fireEvent('modal_done');
+            }).bind(this));
+        }
+    });
+
     Bundle.Text = new Class({
         // label, text, masked
         // action -> change & keyup
@@ -695,7 +811,9 @@
                 "slider": "Slider",
                 "popupButton": "PopupButton",
                 "listBox": "ListBox",
-                "radioButtons": "RadioButtons"
+                "radioButtons": "RadioButtons",
+                "modalButton": "ModalButton",
+                //"fileButton": "FileButton"
             };
             
             if (types.hasOwnProperty(params.type)) {
