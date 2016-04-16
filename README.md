@@ -66,6 +66,7 @@ object contains the following properties:
   * `group` _(optional)_: The name (and text) of a group which this setting will belong to within a tab; multiple settings can use the same value here to be in the same group
 
 #### Events
+###### **(WIP)**
 
 #### Setting Types
 
@@ -85,7 +86,7 @@ object contains the following properties:
 
 
 #### Settings Initialization
-##### **WIP**
+###### **(WIP)**
 
 #### Using Settings Values
 
