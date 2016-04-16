@@ -11,7 +11,7 @@ The goal of this project is to provide a simple way to generate chrome-like sett
 chrome extensions. Settings generation is done all via a javascript object, the "manifest", and event binding can be 
 easily customized via javascript.
 
-Ideally this framework contains enough variety of setting types that one only needs to edit [the "Manifest" 
+Ideally this framework contains enough variety of [setting types](#setting-types) that one only needs to edit [the "Manifest" 
 (`/source/manifest.js`)](#the-manifest) and the [settings initialization script (`/source/settings.js`)](#settings-initialization) 
 such that 
 
@@ -56,39 +56,36 @@ object contains the following properties:
 * `alignment` _(optional)_: _WIP - not sure how to explain this yet_
 * `settings`:
 
-  An array of a "flattened" settings structure; each element in this array describes one setting. All settings, 
-  regardless of type have the following attributes:
+  An array of a "flattened" settings structure; each element in this array describes one setting. All setting objects, 
+  regardless of type have the following properties:
   
   * `tab`: The name (and text) of the tab which this setting will belong to; multiple settings will use the same value here to be on the same tab
   * `name`: The name of this setting; this name will be used to reference it later via javascript, usually as the key of an object
   * `type`: The type of setting, see [setting types](#setting-types) below
   * `label` _(optional)_: The text of a `<label>` element which will be rendered before the setting element
   * `group` _(optional)_: The name (and text) of a group which this setting will belong to within a tab; multiple settings can use the same value here to be in the same group
-  
-##### Setting Types
-###### `description`:
-###### `button`:
-###### `text`:
-###### `textarea`:
-###### `checkbox`:
-###### `slider`:
-###### `popupButton`:
-###### `listBox`:
-Description: renders a `<select>` element in listBox mode
 
-Additional parameters:
-* `multiple`: adds the `multiple` attribute, allowing for multiple options to be selected simultaneously
-* `options`: an array of objects which correspond to the `<option>` elements to go inside the `<select>`; each object 
-should have a `text` property which renders as the text node inside of the `<option>` and a `value` property which is 
-the value of the `value` attribute on the `<option>` element
-  
-###### `radioButtons`:
-###### `modalButton`:
-###### `fileButton` **(WIP)**:
+#### Events
+
+#### Setting Types
+
+| Type | Description | Additional Properties | Events |
+|------|-------------|-----------------------|--------|
+| `description` | renders a `<p>` element containing block of text | <ul><li>`text`: the text contents of the `<p>` element</li></ul> | |
+| `button` | renders a `<button>` element | <ul><li>`text`: the text of the `<button>` element</li></ul> | <ul><li>`action`: fires on button `click`</li></ul> |
+| `text` | renders an `<input>` element with a `type` attribute of either `text` (default) or `password` | <ul><li>`text`: the value of the `placeholder` attribute of the `<input>` element</li><li>`masked`: a boolean property; if true, sets the `type` attribute of the `<input>` element to `password`</li></ul> | |
+| `textarea` | renders an `<input type='textarea'>` element | <ul><li>`text`: _not sure what this does yet_</li><li>`value`: _not sure what this does yet_</li></ul> | `action`: fires on textarea `change` & `keyup` |
+| `checkbox` | renders an `<input type='checkbox'>` element | _HINT: use `label` with this setting type_ | <ul><li>`action`: fires on checkbox `change`</li></ul> |
+| `slider` | renders an `<input type='range'>` element | <ul><li>`min`: sets the `min` attribute</li><li>`max`: sets the `max` attribute</li><li>`step`: sets the `step` attribute</li><li>`display`: a boolean property; if true (default), renders the value of the range beside it (unless modified by `displayModifier`)</li><li>`displayModifier`: a function which receives the value of the range and whose return value is rendered beside the range if `display` is true</li></ul> | <ul><li>`action`: fires on range `change`</li></ul> |
+| `popupButton` | a bit of a misnomer; render's a `<select>` element with `<option>` childred corresponding to the `options` array | <ul><li>`options`: an object with `groups` and `values` properties<ul><li>`groups`: an array of strings; each renders an `<optgroup>` element whose `label` attribute is the value of the string</li><li>`values`: array of objects which correspond to the `<option>` elements to go inside the `<optgroup>`s; each object should have a `text` property which renders as the text node inside of the `<option>`, a `value` property which is the value of the `value` attribute on the `<option>` element, and a `group` property which detmines which `<optgroup>` a given `<option>` is placed</li></ul></li></ul> | `action`: fires on select `change` |
+| `listbox` | renders a `<select>` element in listBox mode with `<option>` elements corresponding to the `options` array | <ul><li>`multiple`: adds the `multiple` attribute, allowing for multiple options to be selected simultaneously</li><li>`options`: an array of objects which correspond to the `<option>` elements to go inside the `<select>`; each object should have a `text` property which renders as the text node inside of the `<option>` and a `value` property which is the value of the `value` attribute on the `<option>` element<\li><\ul> | <ul><li>`action`: fires on select `change`</li></ul> |
+| `radioButtons` | renders a set of `<input type='radio'>` elements corresponding to the `options` array | <ul><li>`options`: an array of objects which correspond to the `<input type='radio'>`; each object should have a `text` property which renders as the text node inside of the `<input type='radio'>` and a `value` property which is the value of the `value` attribute on the `<input type='radio'>` element</li></ul> | <ul><li>`action`: fires on select `change`</li></ul> |
+| `modalButton` | renders a button which, when clicked, opens a modal over the current settings tab, containing nested settings | <ul><li>`text`: the text of the `<button>` element</li><li>`modal`: an object with `title` and `contents` properties<ul><li>`title`: the text which is rendered in an `<h2>` at the top of the modal</li><li>`contents`: an array of nested [settings](#setting-types) which will be rendered inside the modal</li></ul></li></ul> | <ul><li>`action`: fires on button `click`</li><li>`modal_done`: fires on "done" button `click` (inside modal)</li></ul> |
+| `fileButton` | **WIP** | | |
 
 
 #### Settings Initialization
-
+##### **WIP**
 
 #### Using Settings Values
 
